@@ -9,8 +9,24 @@ namespace SuperSmartSwitch
 
         protected void Add(TResult result, TKey1 key1, TKey2 key2)
         {
-            var keyStruct = new Key<TKey1, TKey2> { Key1 = key1, Key2 = key2 };
-            Add(keyStruct, result);
+            Add(CreateKey(key1, key2), result);
+        }
+
+        public TResult Evaluate(TKey1 key1, TKey2 key2)
+        {
+            var result = Get(CreateKey(key1, key2));
+
+            if (!object.Equals(result, default(TResult)))
+            {
+                return result;
+            }
+
+            return Evaluate(key1);
+        }
+
+        internal Key<TKey1, TKey2> CreateKey(TKey1 key1, TKey2 key2)
+        {
+            return new Key<TKey1, TKey2> { Key1 = key1, Key2 = key2 };
         }
     }
 }

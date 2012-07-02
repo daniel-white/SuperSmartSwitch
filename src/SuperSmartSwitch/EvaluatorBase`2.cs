@@ -5,21 +5,22 @@ using System.Text;
 
 namespace SuperSmartSwitch
 {
-    public abstract class EvaluatorBase<TKey, TResult>
+    public abstract class EvaluatorBase<TKey, TResult> : EvaluatorBase<TResult>, IEvaluator<TKey, TResult> 
         where TKey : IEquatable<TKey>
     {
-        private readonly IDictionary<IKey, TResult> _definitions = new Dictionary<IKey, TResult>();
-
-        internal void Add(IKey keyValue, TResult result)
-        {
-            _definitions.Add(keyValue, result);
-        }
-
         protected void Add(TResult result, TKey key)
         {
-            var keyStruct = new Key<TKey> { Key1 = key };
+            Add(CreateKey(key), result);
+        }
 
-            Add(keyStruct, result);
+        public TResult Evaluate(TKey key)
+        {
+            return Get(CreateKey(key));
+        }
+
+        internal Key<TKey> CreateKey(TKey key)
+        {
+            return new Key<TKey> { Key1 = key };
         }
     }
 }
